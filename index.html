@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>韩思琪我喜欢你</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&display=swap');
+  * { margin: 0; padding: 0; }
+  body {
+    background: #faf6f0;
+    font-family: 'Noto Serif SC', 'SimSun', serif;
+    color: #2c2c2c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 50px 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* animated background */
+  .bg-orbs {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.18;
+    animation: orbFloat 18s ease-in-out infinite;
+  }
+  .orb:nth-child(1) { width: 320px; height: 320px; background: #c8965a; top: 10%; left: 10%; animation-delay: 0s; }
+  .orb:nth-child(2) { width: 280px; height: 280px; background: #b8756b; top: 50%; right: 5%; animation-delay: -6s; }
+  .orb:nth-child(3) { width: 240px; height: 240px; background: #e8d5b8; bottom: 10%; left: 30%; animation-delay: -12s; }
+  @keyframes orbFloat {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(30px,-20px) scale(1.05); }
+    66% { transform: translate(-20px,30px) scale(0.95); }
+  }
+
+  /* sparkles */
+  .sparkles {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 1; overflow: hidden;
+  }
+  .sparkle {
+    position: absolute;
+    color: #c8965a;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+    50% { opacity: 0.6; transform: scale(1) rotate(180deg); }
+  }
+
+  body > * { position: relative; z-index: 2; }
+
+  /* title */
+  .title-wrap {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .crown {
+    font-size: 20px;
+    letter-spacing: 12px;
+    color: #c8965a;
+    margin-bottom: 16px;
+    animation: fadeDown 1s ease-out;
+  }
+  h1 {
+    font-size: clamp(28px, 7vw, 44px);
+    font-weight: 900;
+    letter-spacing: 8px;
+    background: linear-gradient(135deg, #c8965a 0%, #b8756b 50%, #c8965a 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite, fadeDown 1s ease-out;
+  }
+  @keyframes shimmer {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .sub {
+    font-size: 11px;
+    color: #b8756b;
+    letter-spacing: 6px;
+    margin-top: 14px;
+    opacity: 0.75;
+    animation: fadeDown 1s ease-out 0.2s both;
+  }
+  .heart-sep {
+    margin: 32px 0;
+    font-size: 14px;
+    color: #c8965a;
+    letter-spacing: 8px;
+    opacity: 0.5;
+    animation: fadeDown 1s ease-out 0.3s both;
+  }
+
+  /* message card */
+  .msg {
+    max-width: 560px;
+    text-align: center;
+    font-size: 15px;
+    line-height: 2.6;
+    color: #6b6560;
+    padding: 40px 32px;
+    background: rgba(255,255,255,0.55);
+    border-radius: 20px;
+    border: 1px solid rgba(200,150,90,0.18);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.04);
+    margin-bottom: 44px;
+    animation: fadeUp 1s ease-out 0.4s both;
+  }
+  .msg .num {
+    font-size: 32px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #c8965a, #b8756b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+    margin: 8px 0;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* photos */
+  .photos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    max-width: 640px;
+    width: 100%;
+    margin-bottom: 40px;
+    animation: fadeUp 1s ease-out 0.6s both;
+  }
+  .photo-frame {
+    position: relative;
+    padding: 8px;
+    background: linear-gradient(135deg, #e8d5b8, #f5efe6, #e8d0cb);
+    border-radius: 14px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .photo-frame:hover {
+    transform: translateY(-6px) rotate(1deg);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.1);
+  }
+  .photo-frame:nth-child(2):hover {
+    transform: translateY(-6px) rotate(-1deg);
+  }
+  .photo-frame img {
+    width: 100%;
+    border-radius: 10px;
+    display: block;
+  }
+  .photo-frame::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(200,150,90,0.2);
+    border-radius: 11px;
+    pointer-events: none;
+  }
+
+  /* vow section */
+  .vow {
+    max-width: 560px;
+    margin-top: 40px;
+    padding: 32px 28px;
+    background: linear-gradient(135deg, rgba(200,150,90,0.08), rgba(184,117,107,0.08));
+    border-radius: 20px;
+    border: 1px solid rgba(200,150,90,0.2);
+    text-align: center;
+    animation: fadeUp 1s ease-out 1s both;
+  }
+  .vow .label {
+    font-size: 10px;
+    letter-spacing: 6px;
+    color: #c8965a;
+    margin-bottom: 16px;
+    opacity: 0.8;
+  }
+  .vow .text {
+    font-size: 13px;
+    line-height: 2.4;
+    color: #6b6560;
+  }
+  .vow .sig {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #b8756b;
+    letter-spacing: 4px;
+  }
+
+  /* bottom */
+  .bottom {
+    margin-top: 48px;
+    font-size: 11px;
+    color: #c8965a;
+    letter-spacing: 5px;
+    opacity: 0.5;
+    animation: fadeUp 1s ease-out 1.2s both;
+  }
+
+  /* floating hearts canvas */
+  .floating-hearts {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 1; overflow: hidden;
+  }
+  .floating-hearts span {
+    position: absolute;
+    animation: floatHeart linear infinite;
+  }
+  @keyframes floatHeart {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    5% { opacity: 0.12; }
+    95% { opacity: 0.12; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* star burst on load */
+  .burst {
+    position: fixed;
+    pointer-events: none; z-index: 3;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: #c8965a;
+    animation: burst 1.5s ease-out forwards;
+  }
+  @keyframes burst {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(20); opacity: 0; }
+  }
+
+  @media (max-width: 400px) {
+    .photos { gap: 10px; }
+    h1 { letter-spacing: 5px; }
+    .msg { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+</div>
+
+<div class="sparkles" id="sparkles"></div>
+
+<div class="floating-hearts" id="hearts"></div>
+
+<div class="title-wrap">
+  <div class="crown">&#10022; &#10022; &#10022;</div>
+  <h1>韩思琪我喜欢你</h1>
+  <div class="sub">LIKE &middot; LOVE &middot; ALWAYS</div>
+</div>
+
+<div class="heart-sep">&#10084; &mdash; &middot; &mdash; &#10084;</div>
+
+<div class="msg">
+  从 2026.04.28 到现在<br>
+  <span class="num">96024</span> 条消息<br>
+  每一个字都是我喜欢你的证据<br><br>
+  你是那个让我觉得<br>"在一起"是一件很好很好的事的人
+</div>
+
+<div class="photos">
+  <div class="photo-frame">
+    <img src="photos/微信图片_20260722114053_15506_8.png">
+  </div>
+  <div class="photo-frame">
+    <img src="photos/微信图片_20260722114053_15507_8.png">
+  </div>
+</div>
+
+<div class="vow">
+  <div class="label">MY VOW TO YOU</div>
+  <div class="text">
+    96024 条消息我会一条一条好好收藏<br>
+    你说的每一句话我都记得<br>
+    以后的路也一起走吧
+  </div>
+  <div class="sig">forever yours</div>
+</div>
+
+<div class="bottom">soyb &amp; Hon &middot; 2026.04.28 &rarr; &#8734;</div>
+
+<script>
+  // sparkles
+  const sp = document.getElementById('sparkles');
+  for (let i = 0; i < 20; i++) {
+    const s = document.createElement('span');
+    s.className = 'sparkle';
+    s.innerHTML = '&#10022;';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.animationDelay = Math.random() * 3 + 's';
+    s.style.fontSize = (8 + Math.random() * 12) + 'px';
+    sp.appendChild(s);
+  }
+
+  // floating hearts
+  const hearts = document.getElementById('hearts');
+  const symbols = ['&#10084;','&#10085;','&#10047;','&#127775;'];
+  function spawnHeart() {
+    const el = document.createElement('span');
+    el.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+    el.style.left = Math.random() * 100 + '%';
+    el.style.fontSize = (10 + Math.random() * 14) + 'px';
+    el.style.animationDuration = (10 + Math.random() * 15) + 's';
+    hearts.appendChild(el);
+    setTimeout(() => el.remove(), 28000);
+  }
+  for (let i = 0; i < 8; i++) spawnHeart();
+  setInterval(spawnHeart, 4000);
+
+  // burst on load
+  setTimeout(() => {
+    const b = document.createElement('div');
+    b.className = 'burst';
+    b.style.left = '50%'; b.style.top = '40%';
+    document.body.appendChild(b);
+    setTimeout(() => b.remove(), 2000);
+  }, 500);
+</script>
+
+</body>
+</html>
