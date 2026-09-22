@@ -6,8 +6,10 @@
 <meta name="description" content="soyb &amp; Hon · 从 2026.04.28 开始">
 <meta name="theme-color" content="#faf6f0">
 <title>韩思琪我喜欢你</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&display=swap');
   * { margin: 0; padding: 0; }
   body {
     background: #faf6f0;
@@ -60,6 +62,47 @@
 
   body > * { position: relative; z-index: 2; }
 
+  /* —— 实时时钟（置于「此刻」卡片上方） —— */
+  .clock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0 18px;
+    animation: fadeUp 1s ease-out 0.35s both;
+  }
+  .clock .time {
+    font-size: clamp(28px, 7.5vw, 38px);
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #c8965a;
+    font-variant-numeric: tabular-nums;   /* 等宽数字，秒跳不抖动 */
+    line-height: 1;
+    text-shadow: 0 2px 18px rgba(200,150,90,0.22);
+  }
+  .clock .time .sec {
+    font-size: 0.5em;
+    font-weight: 600;
+    color: #b8756b;
+    margin-left: 6px;
+    letter-spacing: 1px;
+  }
+  .clock .date {
+    font-size: 11px;
+    color: #a89e94;
+    letter-spacing: 4px;
+  }
+  .clock .date .dot { color: #c8965a; margin: 0 7px; opacity: .6; }
+  /* 时钟与卡片之间的一道细渐隐分隔，视觉上把两者绑成一组 */
+  .clock::after {
+    content: '';
+    display: block;
+    width: 76px;
+    height: 1px;
+    margin-top: 4px;
+    background: linear-gradient(90deg, transparent, rgba(200,150,90,0.45), transparent);
+  }
+
   /* title */
   .title-wrap {
     text-align: center;
@@ -108,6 +151,51 @@
     animation: fadeDown 1s ease-out 0.3s both;
   }
 
+  /* —— 每日诗句 —— */
+  .poem {
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+    padding: 36px 30px 30px;
+    margin-bottom: 44px;
+    border-top: 1px solid rgba(200,150,90,0.22);
+    border-bottom: 1px solid rgba(200,150,90,0.22);
+    animation: fadeUp 1s ease-out 0.45s both;
+  }
+  .poem .quote-mark {
+    font-size: 26px;
+    color: #c8965a;
+    line-height: 1;
+    opacity: 0.55;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .poem .verse {
+    font-size: 16px;
+    line-height: 2.35;
+    color: #4a453f;
+    letter-spacing: 1.5px;
+    white-space: pre-line;
+  }
+  .poem .meta {
+    margin-top: 22px;
+    font-size: 12px;
+    color: #b8756b;
+    letter-spacing: 3px;
+    opacity: 0.85;
+  }
+  .poem .meta .author { color: #c8965a; }
+  .poem .meta .source { margin-left: 8px; opacity: 0.8; }
+  .poem .origin {
+    margin-top: 8px;
+    font-size: 10.5px;
+    color: #a89e94;
+    letter-spacing: 1px;
+    font-style: italic;
+    opacity: 0.85;
+  }
+  .poem .origin:empty { display: none; }
+
   /* message card */
   .msg {
     max-width: 560px;
@@ -135,50 +223,113 @@
     background-clip: text;
     display: inline-block;
     margin: 8px 0;
+    font-variant-numeric: tabular-nums;
+    transition: opacity .3s ease;
   }
+  /* 数字实时跳动 */
+  .msg .num.tick { opacity: .55; }
+
+  /* 统计小表 */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(200,150,90,0.16);
+  }
+  .stats .cell {
+    flex: 1;
+    min-width: 0;
+    padding: 0 10px;
+    border-right: 1px solid rgba(200,150,90,0.16);
+  }
+  .stats .cell:last-child { border-right: none; }
+  .stats .v {
+    font-size: 17px;
+    font-weight: 700;
+    color: #c8965a;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: .5px;
+    transition: opacity .3s ease;
+  }
+  .stats .v.tick { opacity: .55; }
+  .stats .k {
+    margin-top: 6px;
+    font-size: 10px;
+    color: #a89e94;
+    letter-spacing: 2px;
+  }
+
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(24px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* photos */
-  .photos {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-    max-width: 640px;
+  /* photos —— 单张轮换，保持原始比例（竖幅 3:4） */
+  .photo-stage {
     width: 100%;
+    max-width: 400px;
     margin-bottom: 40px;
     animation: fadeUp 1s ease-out 0.6s both;
   }
   .photo-frame {
     position: relative;
-    padding: 8px;
+    padding: 10px;
     background: linear-gradient(135deg, #e8d5b8, #f5efe6, #e8d0cb);
     border-radius: 14px;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.06);
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    box-shadow: 0 10px 34px rgba(0,0,0,0.08);
+    transition: transform 0.5s cubic-bezier(.2,.8,.2,1), box-shadow 0.5s ease;
+    transform: rotate(-0.6deg);
   }
   .photo-frame:hover {
-    transform: translateY(-6px) rotate(1deg);
-    box-shadow: 0 12px 36px rgba(0,0,0,0.1);
-  }
-  .photo-frame:nth-child(2):hover {
-    transform: translateY(-6px) rotate(-1deg);
+    transform: translateY(-6px) rotate(0deg) scale(1.012);
+    box-shadow: 0 16px 44px rgba(0,0,0,0.13);
   }
   .photo-frame img {
-    width: 100%;
-    border-radius: 10px;
     display: block;
+    width: 100%;
+    height: auto;              /* 关键：保持原始纵横比，绝不拉伸 */
+    border-radius: 10px;
   }
   .photo-frame::after {
     content: '';
     position: absolute;
-    inset: 4px;
+    inset: 5px;
     border: 1px solid rgba(200,150,90,0.2);
     border-radius: 11px;
     pointer-events: none;
   }
+
+  /* 切换淡入 */
+  .photo-frame img.swap { animation: photoIn .85s cubic-bezier(.2,.8,.2,1); }
+  @keyframes photoIn {
+    from { opacity: 0; transform: scale(1.035); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  /* 轮换指示点 */
+  .photo-dots {
+    display: flex;
+    justify-content: center;
+    gap: 9px;
+    margin-top: 18px;
+  }
+  .photo-dots button {
+    width: 6px; height: 6px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(200,150,90,0.28);
+    cursor: pointer;
+    transition: background .4s ease, transform .4s ease, width .4s ease;
+  }
+  .photo-dots button.on {
+    background: #c8965a;
+    width: 20px;
+    border-radius: 3px;
+  }
+  .photo-dots button:hover { background: rgba(200,150,90,0.6); }
 
   /* vow section */
   .vow {
@@ -211,6 +362,70 @@
     letter-spacing: 4px;
   }
 
+  /* —— 雨夜街角入口 —— */
+  .gateway {
+    max-width: 560px;
+    width: 100%;
+    margin-top: 40px;
+    animation: fadeUp 1s ease-out 1.15s both;
+  }
+  .gateway a {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    padding: 22px 26px;
+    border-radius: 20px;
+    text-decoration: none;
+    background: linear-gradient(140deg, #0d1428 0%, #141d38 55%, #1b1630 100%);
+    border: 1px solid rgba(140,170,235,0.22);
+    box-shadow: 0 10px 34px rgba(13,20,40,0.22);
+    transition: transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s ease;
+  }
+  .gateway a:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 46px rgba(13,20,40,0.32);
+  }
+  .gateway .glow {
+    position: absolute;
+    inset: -40% -10% auto -10%;
+    height: 150px;
+    background: radial-gradient(ellipse at 26% 60%, rgba(255,190,120,0.20), transparent 68%),
+                radial-gradient(ellipse at 78% 30%, rgba(120,175,255,0.16), transparent 66%);
+    pointer-events: none;
+    animation: gateGlow 9s ease-in-out infinite;
+  }
+  @keyframes gateGlow {
+    0%,100% { opacity: .75; }
+    50% { opacity: 1; }
+  }
+  .gateway .gate-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+  }
+  .gateway .gate-txt .t1 {
+    font-size: 15px;
+    color: #f0e6d8;
+    letter-spacing: 4px;
+    font-weight: 600;
+  }
+  .gateway .gate-txt .t2 {
+    margin-top: 9px;
+    font-size: 10.5px;
+    color: #8fa3cc;
+    letter-spacing: 3px;
+  }
+  .gateway .arrow {
+    flex-shrink: 0;
+    font-size: 18px;
+    color: #c8965a;
+    letter-spacing: 0;
+    transition: transform .45s ease;
+  }
+  .gateway a:hover .arrow { transform: translateX(6px); }
+
   /* bottom */
   .bottom {
     margin-top: 48px;
@@ -218,7 +433,7 @@
     color: #c8965a;
     letter-spacing: 5px;
     opacity: 0.5;
-    animation: fadeUp 1s ease-out 1.2s both;
+    animation: fadeUp 1s ease-out 1.3s both;
   }
 
   /* floating hearts canvas */
@@ -252,9 +467,17 @@
   }
 
   @media (max-width: 400px) {
-    .photos { gap: 10px; }
     h1 { letter-spacing: 5px; }
     .msg { padding: 28px 20px; }
+    .poem { padding: 28px 18px 24px; }
+    .poem .verse { font-size: 15px; letter-spacing: 1px; }
+    .stats .v { font-size: 15px; }
+    .stats .k { letter-spacing: 1px; }
+    .stats .cell { padding: 0 6px; }
+    .photo-stage { max-width: 100%; }
+    .photo-frame { padding: 8px; }
+    .clock { margin: 2px 0 14px; }
+    .clock .date { letter-spacing: 2px; }
   }
 </style>
 </head>
@@ -278,33 +501,236 @@
 
 <div class="heart-sep">&#10084; &mdash; &middot; &mdash; &#10084;</div>
 
-<div class="msg">
-  <p>从 2026.04.28 到现在</p>
-  <p><span class="num">96024</span> 条消息</p>
-  <p>每一个字都是我喜欢你的证据</p>
-  <p class="msg-lead">你是那个让我觉得<br>&ldquo;在一起&rdquo;是一件很好很好的事的人</p>
+<!-- 每日诗句 -->
+<div class="poem" id="poem">
+  <span class="quote-mark">&#10077;</span>
+  <div class="verse" id="poem-verse"></div>
+  <div class="meta" id="poem-meta"></div>
+  <div class="origin" id="poem-origin"></div>
 </div>
 
-<div class="photos">
-  <div class="photo-frame">
-    <img src="photos/微信图片_20260722114053_15506_8.webp" alt="夜晚校园林荫道" width="1086" height="1448" loading="eager" decoding="async">
+<!-- 实时时钟 · 置于「此刻」之上 -->
+<div class="clock">
+  <div class="time"><span id="clkHM">&mdash;&mdash;:&mdash;&mdash;</span><span class="sec" id="clkS">&mdash;&mdash;</span></div>
+  <div class="date" id="clkDate"></div>
+</div>
+
+<!-- 实时统计 -->
+<div class="msg">
+  <p>从 2026.04.28 到此刻</p>
+  <p><span class="num" id="msgCount">&mdash;</span> 条消息</p>
+  <p>每一个字都是我喜欢你的证据</p>
+
+  <div class="stats">
+    <div class="cell">
+      <div class="v" id="dayCount">&mdash;</div>
+      <div class="k">天</div>
+    </div>
+    <div class="cell">
+      <div class="v" id="hourCount">&mdash;</div>
+      <div class="k">小时</div>
+    </div>
+    <div class="cell">
+      <div class="v" id="perDay">&mdash;</div>
+      <div class="k">日均</div>
+    </div>
   </div>
+</div>
+
+<!-- 照片：单张轮换，原比例不裁切 -->
+<div class="photo-stage">
   <div class="photo-frame">
-    <img src="photos/微信图片_20260722114053_15507_8.webp" alt="夜晚校园林荫道" width="1086" height="1448" loading="lazy" decoding="async">
+    <img id="photo" src="photos/微信图片_20260722114053_15506_8.webp" alt="夜晚校园林荫道" width="1086" height="1448" loading="eager" decoding="async">
   </div>
+  <div class="photo-dots" id="photoDots"></div>
 </div>
 
 <div class="vow">
   <div class="label">MY VOW TO YOU</div>
   <div class="text">
-    <p>96024 条消息我会一条一条好好收藏</p>
+    <p>这些数字还在长，我会一直数下去</p>
     <p>你说的每一句话我都记得</p>
     <p>以后的路也一起走吧</p>
   </div>
   <div class="sig">forever yours</div>
 </div>
 
+<!-- 雨夜街角 3D 场景入口 -->
+<div class="gateway">
+  <a href="rainy-night/" aria-label="进入一休仓买·雨夜街角">
+    <span class="glow"></span>
+    <span class="gate-inner">
+      <span class="gate-txt">
+        <span class="t1">一休仓买 &middot; 雨夜街角</span>
+        <span class="t2">RAINY NIGHT &middot; 24H STORE</span>
+      </span>
+      <span class="arrow">&#8594;</span>
+    </span>
+  </a>
+</div>
+
 <div class="bottom">soyb &amp; Hon &middot; 2026.04.28 &rarr; &#8734;</div>
+
+<script src="poems.js"></script>
+<script>
+  /* ============ 实时统计 ============
+   * 锚点：2026-08-27 12:42:27（118,528 条最后一次归档时刻）
+   * 之后按实测日均 563 条/天 持续增长，页面每秒自更新。
+   *
+   * 口径说明（重要）：
+   *   ARCHIVE_START = 2026-01-28，是这 118,528 条的统计起点（不是在一起的起点）。
+   *   日均用「累计消息 / 自 ARCHIVE_START 起的天数」计算，与归档时实测的 563 一致。
+   *   在一起的天数单独用 START_DATE（2026-04-28）计算，两个指标互不干涉。
+   */
+  const ARCHIVE_START = new Date(2026, 0, 28, 23, 36, 43); // 1 月
+  const ANCHOR_DATE   = new Date(2026, 7, 27, 12, 42, 27); // 8 月，归档时刻
+  const ANCHOR_COUNT  = 118528;
+  const PER_DAY       = 563;      // 实测日均（118528 / 210.5 天）
+  const START_DATE    = new Date(2026, 3, 28, 0, 0, 0);    // 2026-04-28 在一起
+
+  const elMsg   = document.getElementById('msgCount');
+  const elDay   = document.getElementById('dayCount');
+  const elHour  = document.getElementById('hourCount');
+  const elPerDay= document.getElementById('perDay');
+
+  const nf = new Intl.NumberFormat('en-US'); // 千分位：118,528
+
+  function countedAt(now){
+    if (now <= ANCHOR_DATE) return ANCHOR_COUNT;
+    const days = (now - ANCHOR_DATE) / 86400000;
+    return ANCHOR_COUNT + days * PER_DAY;
+  }
+
+  function pad(n){ return n < 10 ? '0' + n : '' + n; }
+
+  /* —— 时钟元素 —— */
+  const elHM   = document.getElementById('clkHM');
+  const elSec  = document.getElementById('clkS');
+  const elDate = document.getElementById('clkDate');
+  const WEEK = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
+  function renderClock(now){
+    elHM.textContent  = pad(now.getHours()) + ':' + pad(now.getMinutes());
+    elSec.textContent = pad(now.getSeconds());
+    elDate.innerHTML  =
+      now.getFullYear() + '.' + pad(now.getMonth() + 1) + '.' + pad(now.getDate()) +
+      '<span class="dot">&middot;</span>' + WEEK[now.getDay()];
+  }
+
+  function render(now){
+    // 消息总数：取整显示
+    const total = countedAt(now);
+    elMsg.textContent = nf.format(Math.floor(total));
+
+    // 在一起：天 / 小时
+    const ms = now - START_DATE;
+    elDay.textContent  = nf.format(Math.floor(ms / 86400000));
+    elHour.textContent = nf.format(Math.floor(ms / 3600000));
+
+    // 日均：分母用「自归档起点起的天数」，与归档实测的 563 口径一致
+    const archiveDays = (now - ARCHIVE_START) / 86400000;
+    elPerDay.textContent = Math.round(total / archiveDays);
+  }
+
+  /* —— 每日诗句：按自然日取，同一天恒定 —— */
+  (function(){
+    const p = poemOfDay(new Date());
+    document.getElementById('poem-verse').innerHTML = p.text;
+    document.getElementById('poem-meta').innerHTML =
+      '<span class="author">' + p.author + '</span>' +
+      '<span class="source">' + p.source + '</span>';
+    document.getElementById('poem-origin').innerHTML = p.origin || '';
+  })();
+
+  /* —— 秒级刷新 + 数字跳动过渡 —— */
+  function tickClass(el, on){
+    if (on) el.classList.add('tick'); else el.classList.remove('tick');
+  }
+  let lastSecond = -1;
+  function loop(){
+    const now = new Date();
+    if (now.getSeconds() !== lastSecond){
+      lastSecond = now.getSeconds();
+      renderClock(now);
+      [elMsg, elDay, elHour, elPerDay].forEach(function(el){ tickClass(el, true); });
+      render(now);
+      setTimeout(function(){
+        [elMsg, elDay, elHour, elPerDay].forEach(function(el){ tickClass(el, false); });
+      }, 160);
+    }
+    requestAnimationFrame(loop);
+  }
+
+  renderClock(new Date());
+  render(new Date());
+
+  // 页面离开/切后台时暂停重绘，回来后立刻同步
+  let rafId = null;
+  function start(){ if (rafId === null) rafId = requestAnimationFrame(loop); }
+  function stop(){ if (rafId !== null){ cancelAnimationFrame(rafId); rafId = null; } }
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden) stop();
+    else { const n = new Date(); renderClock(n); render(n); start(); }
+  });
+  start();
+</script>
+
+<script>
+  /* —— 照片轮换：两张交替，8 秒一张，点击可手动切换 —— */
+  (function(){
+    const PHOTOS = [
+      { src: 'photos/微信图片_20260722114053_15506_8.webp', w: 1086, h: 1448 },
+      { src: 'photos/微信图片_20260722114053_15507_8.webp', w: 1086, h: 1448 }
+    ];
+    const img  = document.getElementById('photo');
+    const dots = document.getElementById('photoDots');
+    let idx = 0, timer = null, paused = false;
+
+    // 预加载第二张，切换时不闪白
+    const pre = new Image(); pre.src = PHOTOS[1].src;
+
+    PHOTOS.forEach(function(_, i){
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', '第 ' + (i + 1) + ' 张照片');
+      b.addEventListener('click', function(){ show(i); restart(); });
+      dots.appendChild(b);
+    });
+
+    function show(i){
+      idx = ((i % PHOTOS.length) + PHOTOS.length) % PHOTOS.length;
+      const p = PHOTOS[idx];
+      img.classList.remove('swap');
+      // 强制重排让动画重放
+      void img.offsetWidth;
+      img.src = p.src;
+      img.width = p.w;
+      img.height = p.h;
+      img.classList.add('swap');
+      Array.prototype.forEach.call(dots.children, function(d, k){
+        d.classList.toggle('on', k === idx);
+      });
+    }
+
+    function start(){ if (timer === null && !paused) timer = setInterval(function(){ show(idx + 1); }, 8000); }
+    function stop(){ if (timer !== null){ clearInterval(timer); timer = null; } }
+    function restart(){ stop(); start(); }
+
+    // 页面在后台时不轮换，省电
+    document.addEventListener('visibilitychange', function(){
+      paused = document.hidden;
+      if (paused) stop(); else start();
+    });
+
+    // 鼠标悬停在照片上时暂停轮换，方便看清
+    const stage = img.closest('.photo-stage');
+    stage.addEventListener('mouseenter', stop);
+    stage.addEventListener('mouseleave', start);
+
+    show(0);
+    start();
+  })();
+</script>
 
 <script>
   // sparkles

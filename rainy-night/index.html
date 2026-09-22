@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一休仓买 · 雨夜街角</title>
+<style>
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #070b1c; }
+  canvas { display: block; }
+
+  /* 返回入口：低调的角落胶囊，悬停才完全显现 */
+  .back {
+    position: fixed;
+    top: 22px; left: 22px;
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 17px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-family: 'Noto Serif SC', 'SimSun', serif;
+    font-size: 11.5px;
+    letter-spacing: 3px;
+    color: rgba(240,230,216,0.62);
+    background: rgba(10,16,32,0.42);
+    border: 1px solid rgba(140,170,235,0.20);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    opacity: 0.42;
+    transition: opacity .5s ease, color .5s ease, border-color .5s ease, transform .5s ease;
+    cursor: pointer;
+  }
+  .back:hover {
+    opacity: 1;
+    color: #f0e6d8;
+    border-color: rgba(200,150,90,0.55);
+    transform: translateX(-3px);
+  }
+  .back .b-arrow { color: #c8965a; font-size: 13px; letter-spacing: 0; }
+
+  /* 极简载入提示，避免纯黑屏显得像卡住 */
+  .boot {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #070b1c;
+    color: rgba(190,205,240,0.5);
+    font-family: 'Noto Serif SC', 'SimSun', serif;
+    font-size: 12px;
+    letter-spacing: 6px;
+    z-index: 10;
+    pointer-events: none;
+    transition: opacity .9s ease;
+  }
+  .boot.gone { opacity: 0; }
+
+  @media (max-width: 480px) {
+    .back { top: 14px; left: 14px; padding: 8px 14px; font-size: 10.5px; letter-spacing: 2px; }
+  }
+</style>
+</head>
+<body>
+
+<a class="back" href="../" aria-label="回到主页">
+  <span class="b-arrow">&#8592;</span>
+  <span>回到主页</span>
+</a>
+
+<div class="boot" id="boot">雨 夜 街 角</div>
+
+<script src="./lib/three.min.js"></script>
+<script src="./lib/OrbitControls.js"></script>
+<script src="./js/common.js"></script>
+<script src="./js/world.js"></script>
+<script src="./js/life.js"></script>
+<script src="./js/main.js"></script>
+<script>
+  // 首帧渲出后淡出载入提示
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      var b = document.getElementById('boot');
+      if (b){ b.classList.add('gone'); setTimeout(function(){ b.remove(); }, 1000); }
+    });
+  });
+</script>
+
+</body>
+</html>
