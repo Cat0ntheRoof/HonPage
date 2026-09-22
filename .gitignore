@@ -1,0 +1,9 @@
+# 原图留档（不部署、不进仓库；网页使用 photos/ 下的 WebP）
+photos_original/
+
+# 系统与编辑器杂物
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
