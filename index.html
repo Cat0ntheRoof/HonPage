@@ -196,12 +196,10 @@
   }
   .poem .origin:empty { display: none; }
 
-  /* message card */
+  /* —— 恋爱天数主卡 —— */
   .msg {
     max-width: 560px;
     text-align: center;
-    font-size: 15px;
-    line-height: 2.6;
     color: #6b6560;
     padding: 40px 32px;
     background: rgba(255,255,255,0.55);
@@ -212,53 +210,156 @@
     margin-bottom: 44px;
     animation: fadeUp 1s ease-out 0.4s both;
   }
-  .msg p { margin: 0; }
-  .msg .msg-lead { margin-top: 1.6em; }
-  .msg .num {
-    font-size: 32px;
-    font-weight: 700;
+  .days-label {
+    font-size: 14px;
+    letter-spacing: 4px;
+    color: #8a837c;
+  }
+  .days-num {
+    font-size: clamp(56px, 15vw, 76px);
+    font-weight: 900;
+    line-height: 1.25;
+    letter-spacing: 2px;
     background: linear-gradient(135deg, #c8965a, #b8756b);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    display: inline-block;
-    margin: 8px 0;
     font-variant-numeric: tabular-nums;
-    transition: opacity .3s ease;
+    margin: 6px 0;
   }
-  /* 数字实时跳动 */
-  .msg .num.tick { opacity: .55; }
-
-  /* 统计小表 */
-  .stats {
-    display: flex;
-    justify-content: center;
-    gap: 0;
-    margin-top: 28px;
-    padding-top: 24px;
-    border-top: 1px solid rgba(200,150,90,0.16);
-  }
-  .stats .cell {
-    flex: 1;
-    min-width: 0;
-    padding: 0 10px;
-    border-right: 1px solid rgba(200,150,90,0.16);
-  }
-  .stats .cell:last-child { border-right: none; }
-  .stats .v {
-    font-size: 17px;
-    font-weight: 700;
-    color: #c8965a;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: .5px;
-    transition: opacity .3s ease;
-  }
-  .stats .v.tick { opacity: .55; }
-  .stats .k {
-    margin-top: 6px;
-    font-size: 10px;
+  .days-since {
+    font-size: 12px;
+    letter-spacing: 3px;
     color: #a89e94;
+  }
+
+  /* —— 临近节日倒计时条 —— */
+  .fest-countdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    max-width: 560px;
+    width: 100%;
+    margin: -6px auto 30px;
+    padding: 11px 20px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(200,150,90,0.12), rgba(184,117,107,0.10));
+    border: 1px solid rgba(200,150,90,0.30);
+    animation: fadeDown 1s ease-out 0.25s both;
+  }
+  .fest-countdown[hidden] { display: none; }
+  .fest-countdown .fc-emoji { font-size: 17px; line-height: 1; }
+  .fest-countdown .fc-text {
+    font-size: 13px;
     letter-spacing: 2px;
+    color: #a0713d;
+    font-weight: 600;
+  }
+  .fest-countdown .fc-text b { color: #b8756b; }
+
+  /* —— 节日装饰层（节日当天） —— */
+  .fest-deco {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 4; overflow: hidden;
+  }
+  .fest-deco[hidden] { display: none; }
+  .fest-deco .fd-hang {
+    position: absolute;
+    font-size: 30px;
+    animation: fdSway 4.2s ease-in-out infinite;
+    transform-origin: top center;
+    filter: drop-shadow(0 3px 8px rgba(0,0,0,0.12));
+  }
+  @keyframes fdSway {
+    0%,100% { transform: rotate(-7deg); }
+    50%     { transform: rotate(7deg); }
+  }
+  .fest-deco .fd-fall {
+    position: absolute;
+    top: -8vh;
+    font-size: 17px;
+    animation: fdFall linear infinite;
+  }
+  @keyframes fdFall {
+    0%   { transform: translateY(-8vh) rotate(0deg); opacity: 0; }
+    8%   { opacity: .85; }
+    90%  { opacity: .85; }
+    100% { transform: translateY(106vh) rotate(340deg); opacity: 0; }
+  }
+
+  /* —— 节日祝贺弹窗 —— */
+  .fest-mask {
+    position: fixed; inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(30,22,12,0.45);
+    backdrop-filter: blur(6px);
+    animation: fadeMask .5s ease-out both;
+  }
+  .fest-mask[hidden] { display: none; }
+  @keyframes fadeMask { from { opacity: 0; } to { opacity: 1; } }
+  .fest-modal {
+    position: relative;
+    max-width: 340px;
+    width: 100%;
+    text-align: center;
+    padding: 38px 30px 26px;
+    border-radius: 24px;
+    background: linear-gradient(160deg, #fffdf8, #faf3e6);
+    border: 1px solid rgba(200,150,90,0.35);
+    box-shadow: 0 24px 70px rgba(30,22,12,0.35);
+    animation: popIn .55s cubic-bezier(.2,.9,.3,1.25) both;
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: translateY(26px) scale(.92); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .fest-modal::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px dashed rgba(200,150,90,0.35);
+    border-radius: 19px;
+    pointer-events: none;
+  }
+  .fest-modal .fm-emoji { font-size: 52px; line-height: 1; animation: fdSway 3.6s ease-in-out infinite; }
+  .fest-modal .fm-title {
+    margin-top: 14px;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 6px;
+    color: #b8756b;
+  }
+  .fest-modal .fm-text {
+    margin-top: 14px;
+    font-size: 14px;
+    line-height: 2.1;
+    color: #6b6560;
+  }
+  .fest-modal .fm-btn {
+    margin-top: 24px;
+    padding: 10px 34px;
+    font-family: inherit;
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: #fffdf8;
+    background: linear-gradient(135deg, #c8965a, #b8756b);
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(200,150,90,0.4);
+    transition: transform .3s ease, box-shadow .3s ease;
+  }
+  .fest-modal .fm-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(200,150,90,0.5); }
+  .fest-modal .fm-sig {
+    margin-top: 16px;
+    font-size: 10.5px;
+    letter-spacing: 3px;
+    color: #c0b6ab;
   }
 
   @keyframes fadeUp {
@@ -468,16 +569,16 @@
 
   @media (max-width: 400px) {
     h1 { letter-spacing: 5px; }
-    .msg { padding: 28px 20px; }
+    .msg { padding: 32px 20px; }
     .poem { padding: 28px 18px 24px; }
     .poem .verse { font-size: 15px; letter-spacing: 1px; }
-    .stats .v { font-size: 15px; }
-    .stats .k { letter-spacing: 1px; }
-    .stats .cell { padding: 0 6px; }
     .photo-stage { max-width: 100%; }
     .photo-frame { padding: 8px; }
     .clock { margin: 2px 0 14px; }
     .clock .date { letter-spacing: 2px; }
+    .fest-countdown { margin: -2px auto 24px; padding: 9px 14px; }
+    .fest-countdown .fc-text { font-size: 12px; letter-spacing: 1px; }
+    .fest-modal { padding: 32px 22px 22px; }
   }
 </style>
 </head>
@@ -493,6 +594,20 @@
 
 <div class="floating-hearts" id="hearts"></div>
 
+<!-- 节日装饰层（节日当天出现：角落挂件 + 飘落粒子） -->
+<div class="fest-deco" id="festDeco" hidden></div>
+
+<!-- 节日祝贺弹窗（节日当天自动弹一次） -->
+<div class="fest-mask" id="festMask" hidden>
+  <div class="fest-modal" role="dialog" aria-modal="true">
+    <div class="fm-emoji" id="fmEmoji"></div>
+    <div class="fm-title" id="fmTitle"></div>
+    <div class="fm-text" id="fmText"></div>
+    <button class="fm-btn" id="fmBtn" type="button">收到啦</button>
+    <div class="fm-sig">&mdash; soyb</div>
+  </div>
+</div>
+
 <div class="title-wrap">
   <div class="crown">&#10022; &#10022; &#10022;</div>
   <h1>韩思琪我喜欢你</h1>
@@ -500,6 +615,12 @@
 </div>
 
 <div class="heart-sep">&#10084; &mdash; &middot; &mdash; &#10084;</div>
+
+<!-- 临近节日倒计时（7 天内自动出现） -->
+<div class="fest-countdown" id="festCountdown" hidden>
+  <span class="fc-emoji" id="fcEmoji"></span>
+  <span class="fc-text" id="fcText"></span>
+</div>
 
 <!-- 每日诗句 -->
 <div class="poem" id="poem">
@@ -515,26 +636,11 @@
   <div class="date" id="clkDate"></div>
 </div>
 
-<!-- 实时统计 -->
-<div class="msg">
-  <p>从 2026.04.28 到此刻</p>
-  <p><span class="num" id="msgCount">&mdash;</span> 条消息</p>
-  <p>每一个字都是我喜欢你的证据</p>
-
-  <div class="stats">
-    <div class="cell">
-      <div class="v" id="dayCount">&mdash;</div>
-      <div class="k">天</div>
-    </div>
-    <div class="cell">
-      <div class="v" id="hourCount">&mdash;</div>
-      <div class="k">小时</div>
-    </div>
-    <div class="cell">
-      <div class="v" id="perDay">&mdash;</div>
-      <div class="k">日均</div>
-    </div>
-  </div>
+<!-- 恋爱天数 -->
+<div class="msg days-card">
+  <p class="days-label">这是我们在一起的第</p>
+  <div class="days-num" id="daysNum">&mdash;</div>
+  <p class="days-since">天 &middot; 自 2026.04.28 起，每一天都在数</p>
 </div>
 
 <!-- 照片：单张轮换，原比例不裁切 -->
@@ -548,7 +654,7 @@
 <div class="vow">
   <div class="label">MY VOW TO YOU</div>
   <div class="text">
-    <p>这些数字还在长，我会一直数下去</p>
+    <p>这个数字还会一直长下去</p>
     <p>你说的每一句话我都记得</p>
     <p>以后的路也一起走吧</p>
   </div>
@@ -572,34 +678,15 @@
 <div class="bottom">soyb &amp; Hon &middot; 2026.04.28 &rarr; &#8734;</div>
 
 <script src="poems.js"></script>
+<script src="festivals.js"></script>
 <script>
-  /* ============ 实时统计 ============
-   * 锚点：2026-08-27 12:42:27（118,528 条最后一次归档时刻）
-   * 之后按实测日均 563 条/天 持续增长，页面每秒自更新。
-   *
-   * 口径说明（重要）：
-   *   ARCHIVE_START = 2026-01-28，是这 118,528 条的统计起点（不是在一起的起点）。
-   *   日均用「累计消息 / 自 ARCHIVE_START 起的天数」计算，与归档时实测的 563 一致。
-   *   在一起的天数单独用 START_DATE（2026-04-28）计算，两个指标互不干涉。
+  /* ============ 恋爱天数 ============
+   * 「在一起第 N 天」从 2026-04-28 当天算第 1 天，跨零点自动 +1。
    */
-  const ARCHIVE_START = new Date(2026, 0, 28, 23, 36, 43); // 1 月
-  const ANCHOR_DATE   = new Date(2026, 7, 27, 12, 42, 27); // 8 月，归档时刻
-  const ANCHOR_COUNT  = 118528;
-  const PER_DAY       = 563;      // 实测日均（118528 / 210.5 天）
-  const START_DATE    = new Date(2026, 3, 28, 0, 0, 0);    // 2026-04-28 在一起
+  const START_DATE = new Date(2026, 3, 28, 0, 0, 0);    // 2026-04-28 在一起
 
-  const elMsg   = document.getElementById('msgCount');
-  const elDay   = document.getElementById('dayCount');
-  const elHour  = document.getElementById('hourCount');
-  const elPerDay= document.getElementById('perDay');
-
-  const nf = new Intl.NumberFormat('en-US'); // 千分位：118,528
-
-  function countedAt(now){
-    if (now <= ANCHOR_DATE) return ANCHOR_COUNT;
-    const days = (now - ANCHOR_DATE) / 86400000;
-    return ANCHOR_COUNT + days * PER_DAY;
-  }
+  const elDays = document.getElementById('daysNum');
+  const nf = new Intl.NumberFormat('en-US');
 
   function pad(n){ return n < 10 ? '0' + n : '' + n; }
 
@@ -618,18 +705,101 @@
   }
 
   function render(now){
-    // 消息总数：取整显示
-    const total = countedAt(now);
-    elMsg.textContent = nf.format(Math.floor(total));
+    // 在一起第 N 天（起始当天 = 第 1 天）
+    const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const start0 = new Date(START_DATE.getFullYear(), START_DATE.getMonth(), START_DATE.getDate());
+    const dayNo  = Math.round((today0 - start0) / 86400000) + 1;
+    elDays.textContent = nf.format(dayNo);
+  }
 
-    // 在一起：天 / 小时
-    const ms = now - START_DATE;
-    elDay.textContent  = nf.format(Math.floor(ms / 86400000));
-    elHour.textContent = nf.format(Math.floor(ms / 3600000));
+  /* ============ 节日系统 ============
+   * 1. 临近 7 天内：标题下显示倒计时条
+   * 2. 节日当天：页面挂主题装饰 + 自动弹一次祝贺弹窗（每年只弹一次，localStorage 记忆）
+   */
+  const elFC     = document.getElementById('festCountdown');
+  const elFcEmoji= document.getElementById('fcEmoji');
+  const elFcText = document.getElementById('fcText');
+  const elDeco   = document.getElementById('festDeco');
+  const elMask   = document.getElementById('festMask');
+  let lastFestDay = -1;
 
-    // 日均：分母用「自归档起点起的天数」，与归档实测的 563 口径一致
-    const archiveDays = (now - ARCHIVE_START) / 86400000;
-    elPerDay.textContent = Math.round(total / archiveDays);
+  function renderFest(now){
+    const dayKey = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+    if (dayKey === lastFestDay) return;   // 一天内只需算一次
+    lastFestDay = dayKey;
+
+    const ctx = getFestivalContext(now);
+
+    /* —— 倒计时条 —— */
+    if (ctx.upcoming && ctx.upcoming.days <= 7){
+      elFcEmoji.textContent = ctx.upcoming.fest.emoji;
+      const n = ctx.upcoming.days;
+      elFcText.innerHTML = (n === 1)
+        ? '明天就是 <b>' + ctx.upcoming.fest.name + '</b> 啦'
+        : '距离 <b>' + ctx.upcoming.fest.name + '</b> 还有 ' + n + ' 天';
+      elFC.hidden = false;
+    } else {
+      elFC.hidden = true;
+    }
+
+    /* —— 当天装饰 + 弹窗 —— */
+    if (ctx.active){
+      const f = ctx.active;
+      const theme = FEST_THEMES[f.theme] || FEST_THEMES.love;
+      applyFestDecor(theme);
+      // 弹窗：每年每个节日只自动弹一次
+      const key = 'fest_greet_' + f.name + '_' + now.getFullYear();
+      try {
+        if (!localStorage.getItem(key)){
+          setTimeout(function(){
+            document.getElementById('fmEmoji').textContent = f.emoji;
+            document.getElementById('fmTitle').textContent = f.name + '快乐';
+            document.getElementById('fmText').textContent  = f.greeting;
+            elMask.hidden = false;
+            document.getElementById('fmBtn').addEventListener('click', function(){
+              elMask.hidden = true;
+            });
+          }, 1600);
+          localStorage.setItem(key, '1');
+        }
+      } catch(e){ /* localStorage 不可用（隐私模式）则每次都弹 */ }
+    }
+  }
+
+  /* 按主题挂装饰：四角挂件 + 飘落粒子 */
+  function applyFestDecor(theme){
+    elDeco.innerHTML = '';
+    // 角落挂件：左上 3 个 + 右上 3 个，高低错落
+    const spots = [
+      { left: '3%',  top: '2.5%', size: 30, delay: 0 },
+      { left: '8.5%',top: '5%',   size: 24, delay: .7 },
+      { left: '14%', top: '2%',   size: 20, delay: 1.3 },
+      { right:'3%',  top: '2.5%', size: 30, delay: .4 },
+      { right:'8.5%',top: '5%',   size: 24, delay: 1.0 },
+      { right:'14%', top: '2%',   size: 20, delay: 1.6 }
+    ];
+    spots.forEach(function(s, i){
+      const el = document.createElement('span');
+      el.className = 'fd-hang';
+      el.textContent = theme.hang[i % theme.hang.length];
+      el.style.left = s.left; el.style.right = s.right;
+      el.style.top = s.top;
+      el.style.fontSize = s.size + 'px';
+      el.style.animationDelay = s.delay + 's';
+      elDeco.appendChild(el);
+    });
+    // 飘落粒子：12 个，随机横向位置与时长
+    for (let i = 0; i < 12; i++){
+      const el = document.createElement('span');
+      el.className = 'fd-fall';
+      el.textContent = theme.fall;
+      el.style.left = (Math.random() * 96) + '%';
+      el.style.fontSize = (13 + Math.random() * 10) + 'px';
+      el.style.animationDuration = (9 + Math.random() * 8) + 's';
+      el.style.animationDelay = (Math.random() * 9) + 's';
+      elDeco.appendChild(el);
+    }
+    elDeco.hidden = false;
   }
 
   /* —— 每日诗句：按自然日取，同一天恒定 —— */
@@ -642,27 +812,23 @@
     document.getElementById('poem-origin').innerHTML = p.origin || '';
   })();
 
-  /* —— 秒级刷新 + 数字跳动过渡 —— */
-  function tickClass(el, on){
-    if (on) el.classList.add('tick'); else el.classList.remove('tick');
-  }
+  /* —— 秒级刷新 —— */
   let lastSecond = -1;
   function loop(){
     const now = new Date();
     if (now.getSeconds() !== lastSecond){
       lastSecond = now.getSeconds();
       renderClock(now);
-      [elMsg, elDay, elHour, elPerDay].forEach(function(el){ tickClass(el, true); });
       render(now);
-      setTimeout(function(){
-        [elMsg, elDay, elHour, elPerDay].forEach(function(el){ tickClass(el, false); });
-      }, 160);
+      // 跨天时节日状态需要重算（倒计时条出现/弹窗触发）
+      renderFest(now);
     }
     requestAnimationFrame(loop);
   }
 
   renderClock(new Date());
   render(new Date());
+  renderFest(new Date());
 
   // 页面离开/切后台时暂停重绘，回来后立刻同步
   let rafId = null;
@@ -670,7 +836,7 @@
   function stop(){ if (rafId !== null){ cancelAnimationFrame(rafId); rafId = null; } }
   document.addEventListener('visibilitychange', function(){
     if (document.hidden) stop();
-    else { const n = new Date(); renderClock(n); render(n); start(); }
+    else { const n = new Date(); renderClock(n); render(n); renderFest(n); start(); }
   });
   start();
 </script>
