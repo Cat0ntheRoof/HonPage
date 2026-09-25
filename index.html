@@ -677,8 +677,8 @@
 
 <div class="bottom">soyb &amp; Hon &middot; 2026.04.28 &rarr; &#8734;</div>
 
-<script src="poems.js"></script>
-<script src="festivals.js"></script>
+<script src="poems.js?v=2"></script>
+<script src="festivals.js?v=1"></script>
 <script>
   /* ============ 恋爱天数 ============
    * 「在一起第 N 天」从 2026-04-28 当天算第 1 天，跨零点自动 +1。
@@ -724,6 +724,8 @@
   let lastFestDay = -1;
 
   function renderFest(now){
+    // 守卫：festivals.js 若加载失败（CDN 缓存 404 等），跳过节日逻辑但不许拖垮主循环
+    if (typeof getFestivalContext !== 'function') return;
     const dayKey = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
     if (dayKey === lastFestDay) return;   // 一天内只需算一次
     lastFestDay = dayKey;
@@ -820,15 +822,15 @@
       lastSecond = now.getSeconds();
       renderClock(now);
       render(now);
-      // 跨天时节日状态需要重算（倒计时条出现/弹窗触发）
-      renderFest(now);
+      // 跨天时节日状态需要重算（倒计时条出现/弹窗触发）；任何异常不许中断主循环
+      try { renderFest(now); } catch(e){ /* 节日系统故障时页面其余功能照常 */ }
     }
     requestAnimationFrame(loop);
   }
 
   renderClock(new Date());
   render(new Date());
-  renderFest(new Date());
+  try { renderFest(new Date()); } catch(e){}
 
   // 页面离开/切后台时暂停重绘，回来后立刻同步
   let rafId = null;
@@ -836,7 +838,7 @@
   function stop(){ if (rafId !== null){ cancelAnimationFrame(rafId); rafId = null; } }
   document.addEventListener('visibilitychange', function(){
     if (document.hidden) stop();
-    else { const n = new Date(); renderClock(n); render(n); renderFest(n); start(); }
+    else { const n = new Date(); renderClock(n); render(n); try { renderFest(n); } catch(e){} start(); }
   });
   start();
 </script>
