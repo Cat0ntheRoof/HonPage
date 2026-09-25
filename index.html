@@ -804,14 +804,17 @@
     elDeco.hidden = false;
   }
 
-  /* —— 每日诗句：按自然日取，同一天恒定 —— */
+  /* —— 每日诗句：按自然日取，同一天恒定（加载失败不影响其余功能） —— */
   (function(){
-    const p = poemOfDay(new Date());
-    document.getElementById('poem-verse').innerHTML = p.text;
-    document.getElementById('poem-meta').innerHTML =
-      '<span class="author">' + p.author + '</span>' +
-      '<span class="source">' + p.source + '</span>';
-    document.getElementById('poem-origin').innerHTML = p.origin || '';
+    try {
+      if (typeof poemOfDay !== 'function') return;
+      const p = poemOfDay(new Date());
+      document.getElementById('poem-verse').innerHTML = p.text;
+      document.getElementById('poem-meta').innerHTML =
+        '<span class="author">' + p.author + '</span>' +
+        '<span class="source">' + p.source + '</span>';
+      document.getElementById('poem-origin').innerHTML = p.origin || '';
+    } catch(e){ /* 诗句系统故障时页面其余功能照常 */ }
   })();
 
   /* —— 秒级刷新 —— */
